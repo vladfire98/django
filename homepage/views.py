@@ -55,5 +55,8 @@ def ufw(request):
 def git(request):
     return render(request, 'homepage/git.html', {'title': 'git'})
 
+def screen(request):
+    return render(request, 'homepage/screen.html', {'title': 'screen'})
+
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')

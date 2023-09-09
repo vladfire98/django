@@ -17,4 +17,5 @@ urlpatterns = [
     path('haproxy/', haproxy, name='haproxy'),
     path('ufw/', ufw, name='ufw'),
     path('git/', git, name='git'),
+    path('screen/', screen, name='screen'),
 ]
