@@ -1,0 +1,77 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>PostgreSQL</h1>
+
+<pre>
+    psql -c "create database db_name"
+    psql -d ergu_reg_srvc -c "create schema stage;"
+    psql -c "create user user_name with password '1234';"
+    psql -c "grant all privileges on database db_name to user_name;"
+    psql -d db_name -f /tmp/script.sql
+</pre>
+
+<p>Импорт CSV</p>
+<pre>
+    psql -d db_name -c "COPY public.table(column1,column2) FROM '/path/to/file.csv' WITH DELIMITER ';' CSV HEADER;"
+</pre>
+<pre>
+    sed -i 's/,/;/g' file.csv
+    sed -i 's/NULL//g' file.csv
+</pre>
+<pre>
+    update public.table_name set column_1= NULL where column_1='';
+    delete from схема.таблица where что то = чему то;
+</pre>
+
+<p>Выдать права суперпользователя</p>
+<pre>
+    ALTER USER user_name SUPERUSER;
+    ALTER USER user_name NOSUPERUSER;
+</pre>
+
+<pre>
+    GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO user_name;
+    GRANT ALL ON SCHEMA STAGE TO user_name;
+</pre>
+
+<p>Выдавать права на чтение пользователю</p>
+<pre>
+    GRANT SELECT ON table_name to user_name;
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO user_name;
+</pre>
+<p>Права пользователей на табличку</p>
+<pre>
+    select * from information_schema.table_privileges where table_name='table_name';
+</pre>
+
+<p>Размер таблички</p>
+<pre>SELECT pg_size_pretty( pg_total_relation_size( 'stage.rgu' ) ); </pre>
+
+<p>Срез 20 табличек</p>
+<pre>
+    SELECT nspname  '.'  relname AS "relation",
+    pg_size_pretty(pg_relation_size(C.oid)) AS "size"
+    FROM pg_class C
+    LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+    WHERE nspname NOT IN ('pg_catalog', 'information_schema')
+    ORDER BY pg_relation_size(C.oid) DESC
+    LIMIT 20;
+</pre>
+
+<p>Значение из конфига</p>
+<pre>
+    SHOW max_connections;
+</pre>
+
+<p>Текущее значение</p>
+<pre>
+    SELECT COUNT(*) FROM pg_stat_activity;
+</pre>
+
+<p>Сбросить все подключения от бд</p>
+<pre>
+    SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.pid != pg_backend_pid();
+</pre>
+
+
+{% endblock %}

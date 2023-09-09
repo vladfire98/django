@@ -1,0 +1,47 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>HAProxy</h1>
+<h4>Установка и настройка<hr></h4>
+<pre>
+    apt-get install haproxy
+</pre>
+<p>Конфиг находится по пути <b>/etc/haproxy/haproxy.cfg</b> </p>
+
+<h4>Проксирование<hr></h4>
+<p>Конфигурируем <b>frontend</b> (откуда он будет принимать реквесты) и <b>backend</b> (куда будет отсылать).</p>
+<pre>
+  frontend my_server_front
+	bind *:80
+	default_backend <b>my_server_back</b>
+
+  backend <b>my_server_back</b>
+	server nginx_server vladfire.ru:80
+</pre>
+<p>То есть запросы приходящие на адрес сервера haproxy (с любых ip-адресов <b> * </b>) на порт 80 будут перенаправляться на vladfire.ru:80</p>
+
+<h4>Round robin<hr> </h4>
+<pre>
+    frontend my_balance_front
+        bind *:80
+        default_backend my_balance_back
+
+    backend my_balance_back
+        balance roundrobin
+        server web1 192.168.0.100:80
+        server web2 192.168.0.101:80
+</pre>
+<p>По умолчанию балансировка будет 1:1.<br>
+    Для того, чтоб 90% реквестов шли на web1, остальные 10% на web2 - то необходимо добавить <b>weight</b>:
+</p>
+<pre>
+    frontend my_balance_front
+        bind *:80
+        default_backend my_balance_back
+
+    backend my_balance_back
+        balance roundrobin
+        server web1 192.168.0.100:80 weight 90
+        server web2 192.168.0.101:80 weight 10
+</pre>
+
+{% endblock %}

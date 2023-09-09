@@ -1,0 +1,81 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Firewalld</h1>
+
+<h4>Установка firewalld <hr></h4>
+<pre>
+    yum install firewalld
+</pre>
+
+<p>Проверить состояние можно командой</p>
+<pre>
+    firewall-cmd --state
+</pre>
+
+<p>Добавляем в автозагрузку и запускаем</p>
+<pre>
+    systemctl enable firewalld
+    systemctl start firewalld
+</pre>
+
+
+<h5>В сценарии с Debian/Ubuntu необходимо отключить имеющиеся файерволы <hr> </h5>
+
+
+<h4>Открываем порт</h4>
+<pre>
+    firewall-cmd --add-port=5432/tcp
+</pre>
+<p>Чтобы закрыть порт:</p>
+<pre>
+    firewall-cmd --remove-port=5432/tcp
+</pre>
+
+<h4>Разрешить сервис</h4>
+<p>Для просмотра сервисов, которые можно добавить в файрвол</p>
+<pre>
+    firewall-cmd --get-services
+</pre>
+
+<pre>Разрешить FTP сервис</pre>
+<pre>
+    firewall-cmd --add-service=ftp
+</pre>
+<p>Чтобы закрыть сервис</p>
+<pre>
+    firewall-cmd --remove-service=ftp
+</pre>
+
+<h4>Применить конфигурацию</h4>
+<p>Чтобы применить настройки без перезагрузки сервиса</p>
+<pre>
+    firewall-cmd --reload
+</pre>
+
+<p>Чтобы сохранить настройки</p>
+<pre>
+    firewall-cmd --runtime-to-permanent
+</pre>
+
+<p>Просмотреть конфигурацию</p>
+<pre>
+    firewall-cmd --list-all
+</pre>
+
+<h4>Открытие соединений для конретной подсети</h4>
+<p>Для конкретного адреса</p>
+<pre>
+    firewall-cmd --add-rich-rule 'rule family="ipv4" source address="188.93.20.2" accept'
+</pre>
+
+<p>Для адреса с портом</p>
+<pre>
+    firewall-cmd --add-rich-rule 'rule family="ipv4" source address="54.216.21.57" port port="1389" protocol="tcp" accept'
+</pre>
+
+<p>Для подсети</p>
+<pre>
+    firewall-cmd --add-rich-rule 'rule family="ipv4" source address="192.168.0.0/24" service name="ftp" accept'
+</pre>
+
+{% endblock %}

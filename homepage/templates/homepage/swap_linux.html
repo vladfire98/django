@@ -1,0 +1,43 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Swap Linux</h1>
+<h4>Создание файла подкачки <hr></h4>
+<p>Для создания файла подкачки следует предварительно создать обычный файл с помощью команды fallocate, задав его размер: </p>
+<pre>
+    fallocate -l 10G /swapfile
+    chmod 600 /swapfile
+</pre>
+
+<p>Теперь следует создать сам файл подкачки на основе созданного файла с помощью утилиты mkswap:</p>
+<pre>
+    mkswap /swapfile
+</pre>
+
+<p>Далее следует подключить файл подкачки с помощью команды swapon:</p>
+<pre>
+    swapon /swapfile
+</pre>
+
+<p>При ошибке "swapon failed: Invalid argument" необходимо вместо fallocate создать файл используя утилиту <b>dd</b>: </p>
+<pre>
+    dd if=/dev/zero of=/swapfile bs=1MiB count=10000
+</pre>
+
+<p>Добавим подключение при загрузке в /etc/fstab:</p>
+<pre>
+    /swapfile swap swap defaults 0 0
+</pre>
+
+
+<h4>Освободить кэш и память<hr></h4>
+<p>PageCache - это то место, куда ядро складывает данные, которые мы записывали/читали из диска. <br>
+inode/dentrie - сюда записывается структура файловой системы, расположение файлов и папок.
+</p>
+<ol>
+    <li>Очистка PageCache <br> <b>sync; echo 1 > /proc/sys/vm/drop_caches</b> </li>
+    <li>Очистка inode/dentrie <br> <b>sync; echo 2 > /proc/sys/vm/drop_caches</b> </li>
+    <li>Очистка PageCache и inode/dentrie <br> <b>sync; echo 3 > /proc/sys/vm/drop_caches
+</b> </li>
+</ol>
+
+{% endblock %}

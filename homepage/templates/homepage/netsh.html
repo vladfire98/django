@@ -1,0 +1,40 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Netsh</h1>
+
+<p>Посмотреть список правил</p>
+<pre>
+  netsh interface portproxy show all
+</pre>
+
+<p>Добавить проксирование</p>
+<pre>
+  netsh interface portproxy add v4tov4 listenaddress=77.11.152.65 listenport=21 connectaddress=dest_addr connectport=21 protocol=tcp
+</pre>
+
+
+<p>Удалить правило</p>
+<pre>
+  netsh interface portproxy delete v4tov4 listenaddress=77.11.152.65 listenport=21
+</pre>
+
+<p>Удалить все правила</p>
+<pre>
+  netsh interface portproxy reset
+</pre>
+
+<hr>
+<h4><b>v4tov4.ps1</b></h4>
+<pre>
+  $a = 4000
+While ($a -le 6000){
+    netsh interface portproxy add v4tov4 listenaddress=77.11.152.65 listenport=$a connectaddress=dest_addr connectport=$a protocol=tcp
+    $a += 1
+}
+
+netsh interface portproxy add v4tov4 listenaddress=77.11.152.65 listenport=21 connectaddress=dest_addr connectport=21 protocol=tcp
+netsh interface portproxy add v4tov4 listenaddress=77.11.152.65 listenport=7500 connectaddress=dest_addr connectport=7500 protocol=tcp
+</pre>
+
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Ufw</h1>
+
+<h4>Состояние <hr></h4>
+<p>Проверим состояние и список правил <b>ufw</b> </p>
+<pre>
+    ufw status
+</pre>
+<pre>
+    Status: active
+
+    To                         Action      From
+    --                         ------      ----
+    22/tcp                     ALLOW       Anywhere
+    5432                       ALLOW       Anywhere
+    80/tcp                     ALLOW       Anywhere
+</pre>
+<p>Отлючить ufw</p>
+<pre>
+    ufw disable
+</pre>
+
+
+<h4>Порты <hr></h4>
+<p>Открываем порт</p>
+<pre>
+    ufw allow 6379/tcp
+</pre>
+<p>Открываем ренж портов 6000-6005</p>
+<pre>
+    ufw allow 6000:6005/tcp
+</pre>
+
+<h4>Сервисы <hr></h4>
+<p>Для просмотра сервисов, которые можно добавить в файрвол</p>
+<pre>
+    ufw app list
+</pre>
+
+<p>Разрешить OpenSSH сервис</p>
+<pre>
+    ufw allow OpenSSH
+</pre>
+
+<h4>Сети и подсети <hr></h4>
+<p>Разрешить подключение с адреса 188.93.20.2</p>
+<pre>
+    ufw allow from 188.93.20.2
+</pre>
+
+<p>Для адреса с портом</p>
+<pre>
+    ufw allow from 188.93.20.2 to any port 22
+</pre>
+
+<p>Для подсети</p>
+<pre>
+    ufw allow from 188.93.20.0/24
+</pre>
+<p>Или открыть для подсети порт</p>
+<pre>
+    ufw allow from 188.93.20.0/24 to any port 22
+</pre>
+<p>Для интерфейса</p>
+<pre>
+    ufw allow in on eno1 to any port 80
+</pre>
+
+<h4>Блокировка <hr></h4>
+<p>То же самое, как и разрешить, только заменить <b>allow</b> на <b>deny</b> </p>
+<p>Чтобы закрыть порт:</p>
+<pre>
+    ufw deny 6379/tcp
+</pre>
+<p>Чтобы закрыть сервис OpenSSH:</p>
+<pre>
+    ufw deny OpenSSH
+</pre>
+<p>Запретить все подключения с ip</p>
+<pre>
+    ufw deny from 188.93.20.2
+</pre>
+<p>Чтоб запретить порт на самом сервере.<br>Например, между приложениями.
+</p>
+<pre>
+    ufw deny out 6379
+</pre>
+
+<h4>Удаление правил <hr></h4>
+<p>Посмотреть нумерацию правил</p>
+<pre>
+    ufw status numbered
+</pre>
+<pre>
+    Status: active
+         To                         Action      From
+         --                         ------      ----
+    [ 1] 22/tcp                     ALLOW IN    Anywhere
+    [ 2] 80/tcp                     ALLOW IN    Anywhere
+    [ 3] 5432                       ALLOW IN    Anywhere
+</pre>
+<p>Удалить по индексу первое правило</p>
+<pre>
+    ufw delete 1
+</pre>
+
+<h4>Сбросить все правила</h4>
+<pre>
+    ufw reset
+</pre>
+
+
+{% endblock %}

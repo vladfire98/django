@@ -1,0 +1,100 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Git</h1>
+<h4>Конфигурация .gitconfig<hr></h4>
+<pre>
+    git config –global user.name “Имя”
+    git config --global user.email “Почта”
+</pre>
+<p>Чтобы посмотреть все установленные настройки и узнать где именно они заданы</b> </p>
+<pre>
+    git config --list --show-origin
+</pre>
+
+<h4>История изменений, .gitignore, и восстановление файлов <hr></h4>
+<ul>
+    <li><b>git log</b>  - покажет все коммиты</li>
+    <li><b>git log -1</b>  - покажет последний коммит</li>
+    <li><b>git log -1 -p</b>  - покажет измения в коммите</li>
+</ul>
+
+<p>Вернуть файл в первоначальное состояние</p>
+<pre>
+    git checkout -- file.txt
+    =========или============
+    git restore C.txt
+</pre>
+<p>Посмотреть разницу между последним коммитом что было добавлено (то что запишет в git log)</p>
+<pre>
+    git diff --staged
+</pre>
+<p>В .gitignore просто указать названия файлов и директорий</p>
+
+
+<h4>Создание и работа с ветками <hr> </h4>
+<ul>
+    <li><b>git branch</b>  - покажет ветки</li>
+    <li><b>git branch develop</b>  - создать ветку develop</li>
+    <li><b>git branch -d develop</b>  - удалить ветку develop</li>
+    <li><b>git checkout develop</b>  - переключиться на ветку develop  (с флагом -b создаст ветку и перейдет в нее сразу)</li>
+    <li><b>git merge develop</b>  - смержить изменения из develop в master</li>
+</ul>
+<p>Чтобы удалить ветку, в которой были уже сделаны коммиты</p>
+<pre>
+    git branch -D test
+</pre>
+
+
+<h4>Разрешение конфликтов</h4>
+<p>Оставить изменения файла из текущей ветки (в которую мержим)</p>
+<pre>
+    git checkout --ours file.txt</pre>
+<p>Оставить изменения файла из внешней ветки (из которой мержим в текущую)</p>
+<pre>
+    git checkout --theirs file.txt</pre>
+
+<p>Например:</p>
+<pre>
+    git merge develop
+    git checkout --theirs file.txt
+    git status
+    cat file.txt
+    git add .
+    git commit
+    git status
+    git push
+</pre>
+
+
+<h4>Возврат на предыдущие версии <hr> </h4>
+<p>Переключиться (осмотреться) на предыдущие коммиты</p>
+<pre>git checkout <b>hash</b></pre>
+<p>С этого коммита можно создать новую ветку</p>
+<pre>
+    git switch -c develop-1
+</pre>
+<p>Чтобы вернуться назад:</p>
+<pre>
+    git switch -
+    ======или======
+    git checkout master
+</pre>
+
+
+<h4>Перенос репы <hr></h4>
+<p>Способ 1</p>
+<ol>
+    <li>Склонировать репу</li>
+    <li>git remote remove origin</li>
+    <li>git remote add origin "УРЛ репы назначения"</li>
+    <li>git push</li>
+</ol>
+
+<p>Способ 2</p>
+<pre>
+    set repo=name-repo
+    git clone --bare https://github/%repo%.git
+    cd %repo%.git
+    git push --mirror https://gitlab/%repo%.git
+</pre>
+{% endblock %}

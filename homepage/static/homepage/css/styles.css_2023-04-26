@@ -1,0 +1,83 @@
+body{
+  background:  rgb(236, 234, 234);
+}
+
+
+/*================Шапка===========================*/
+.shapka {
+  width: 100%;
+  height: 5%;
+  float: top;
+}
+
+.shapka .logo {
+  display: inline-block;
+  width: 100%;
+  line-height: 3em;
+  background-color: rgb(47, 47, 56);
+  font-size: 1.4em;
+  font-weight: bolder;
+  padding-left: 15px;  
+}
+
+.shapka .logo a {
+  text-decoration: none;
+  color: white;
+}
+
+
+/*================Боковое меню=====================*/
+
+.spisok h1 {
+  font-size: 24px;
+  padding: 10px;
+  color: rgb(33, 80, 109);
+  font-weight: bolder;
+}
+
+.spisok ul {list-style: none;}
+.spisok ul a { text-decoration: none;}
+
+.spisok ul li {
+  font-size: 18px;
+  padding: 10px;
+  color: rgb(35, 38, 39);
+  transition: transform .05s ease;
+}
+.spisok ul li:hover {
+  font-size: 18px;
+  padding: 10px;
+  color: rgb(26, 87, 110);
+  transform: scale(1.03);
+}
+
+/*================Основной контент=====================*/
+.main {
+  background: white;
+  padding: 2%; 
+  color: rgb(61, 61, 61);
+}
+
+.main h1{
+  text-align: center;
+}
+.main h4, h5{
+  margin-top: 55px;
+  margin-bottom: 15px;
+}
+
+.main p{
+  margin-bottom: 15px;
+  margin-top: 15px;
+  font-size: 18px;
+}
+
+
+.main code, pre {
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  color: black;  
+  background-color: rgb(231, 229, 226);
+  padding: 5px;  
+  border-radius: 10px;
+}

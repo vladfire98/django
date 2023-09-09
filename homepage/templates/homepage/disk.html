@@ -1,0 +1,78 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Добавление диска и расширение LVM </h1>
+
+<h4>Добавление диска <hr></h4>
+<p>Посмотреть список всех дисков и партиций можно следующими командами</p>
+<pre>
+    fdisk -l
+    lsblk
+</pre>
+
+<p>Отредактировать разделы диска sdb следующей командой</p>
+<code>
+    sudo cfdisk /dev/sdb
+</code>
+
+<p>Отформатировать и сделать файловую систему</p>
+<code>
+    sudo mkfs.ext4 -f /dev/sdb1
+</code>
+
+<h4>Mount <hr></h4>
+<p>Будем монтировать диск в директорию /media/hdd2, допишем в <b>/etc/fstab</b> следующую строку</p>
+<pre>
+    /dev/sdb1	/media/hdd2	ext4	default		0	0
+</pre>
+
+<p>Следующей командой пойдет в тот файл и сделает маунт, но перед этим нужно отмонтировать sdb</p>
+<code>
+    sudo mount /media/hdd2
+</code>
+
+<h4>Расширение LVM <hr></h4>
+<p>Вывод fdisk -l покажет, что LV раздел занимает 124гб</p>
+<pre>
+    Disk /dev/mapper/ubuntu--vg-ubuntu--lv: 124.51 GiB
+</pre>
+
+<p>Командра <b>vgdisplay</b> выведет следующую информацию</p>
+<pre>
+    root@samba:/home/bednyakov# vgdisplay
+  --- Volume group ---
+  VG Name               ubuntu-vg
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <249.00 GiB
+  PE Size               4.00 MiB
+  Total PE              63743
+  Alloc PE / Size       31872 / 124.50 GiB
+  <font color=red>Free  PE / Size       31871 / <124.50 GiB</font>
+  VG UUID               UiIRlq-5Id6-IF1z-3GlM-jCJQ-uIt5-0rGhTR
+
+</pre>
+
+<p>Добавим все свободное место</p>
+<code>
+    lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+</code>
+
+<p>Делаем ресайз файловой системы</p>
+<code>
+    resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+</code>
+
+<p>Готово!<br>
+Если нужно расширить физический диск, то необходимо сделать <b>pvresize /dev/sda3</b></p>
+
+{% endblock %}

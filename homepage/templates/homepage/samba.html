@@ -1,0 +1,88 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+
+<h1>Samba</h1>
+<h4>Настройка времени и правил iptables <hr></h4>
+<pre>
+    sudo apt-get install chrony
+    sudo systemctl enable chrony
+</pre>
+<pre>
+    iptables -I INPUT -p tcp --dport 445 -j ACCEPT
+    iptables -I INPUT -p udp --dport 137:138 -j ACCEPT
+    iptables -I INPUT -p tcp --dport 139 -j ACCEPT
+</pre>
+
+<h4>Установка Samba в Ubuntu <hr></h4>
+<code>
+    sudo apt-get install samba
+</code>
+
+<p>Добавим сервис в автозапуск</p>
+<code>
+    systemctl enable smbd
+</code>
+
+<h4>Полезные команды <hr></h4>
+<p>Перезапустить сервис</p>
+<code>
+    sudo systemctl restart smbd
+</code>
+
+<p></p>
+<p>Расположение конфиг файла</p>
+<code>
+    /etc/samba/smb.conf
+</code>
+
+<h4>Работа с пользователями, группами и правами <hr></h4>
+<ul>
+    <li><b>sudo adduser user</b>  - добавить пользователя в linux</li>
+    <li><b>sudo smbpasswd -a user</b> - добавить пользователя в samba не активируя его</li>
+    <li><b>sudo smbpasswd -e user</b> - включает ранее добавленного пользователя</li>
+    <li><b>sudo groupadd smbprvt</b>    - создать группу в linux</li>
+    <li><b>sudo usermod -aG smbprvt user</b>    - добавить пользователя в группу</li>
+    <li><b>sudo chown root:smbprvt /samba/everyone/</b>     - изменить владельца и группу директории</li>
+    <li><b>sudo chmod u-r,u-w,u-x folder</b>       - права на директорию</li>
+
+</ul>
+<p>Пример прав на шару</p>
+<pre>
+    drwxrwxrwx  2 root root        4096 ноя 11 11:06 public/
+    d---rwx---  6 root smbprvt     4096 ноя  9 16:47 private/
+</pre>
+
+<h4>Пример конфигурации</h4>
+<pre>
+[global]
+workgroup = WORKGROUP
+security = user
+map to guest = bad user
+wins support = no
+dns proxy = no
+
+
+
+[public]
+    comment = Public Folder
+    path = /media/hdd/public
+    public = yes
+    writable = yes
+    read only = no
+    guest ok = yes
+    create mask = 0777
+    directory mask = 0777
+    force create mode = 0777
+    force directory mode = 0777
+
+
+[private]
+path = /media/hdd/private
+valid users = @smbprvt
+guest ok = no
+browsable = yes
+writable = yes
+
+</pre>
+
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends 'homepage/base.html' %}
+
+
+{% block content %}
+<h1>Docker</h1>
+<p>Docker - это мини виртуальные машины. <br>
+Все команды нужно запускать с <b>sudo</b>, а чтобы от этого избавиться необходимо пользователя добавить в группу docker:
+</p>
+<code>
+    sudo usermod -aG docker $USER
+</code>
+
+<p>Создать группу docker можно следующей командой:</p>
+<code>
+    sudo groupadd docker
+</code>
+
+<h4>Просмотр контейнеров <hr></h4>
+<p>По умолчанию команда <b>docker ps</b> выведет только запущенные контейрены</p>
+<pre>
+    bednyakov@ubuntu:~$ docker ps
+    CONTAINER ID   IMAGE                COMMAND      CREATED        STATUS        PORTS                                       NAMES
+    9d68b29b76a2   giggio/openvpn-arm   "ovpn_run"   33 hours ago   Up 33 hours   0.0.0.0:1194->1194/udp, :::1194->1194/udp   openvpn
+</pre>
+<p>Для того, чтобы посмотреть все активные контейнеры и которые были запущенны ранее, необходимо запустить команду <b>docker ps -a</b></p>
+<pre>
+    bednyakov@ubuntu:~$ docker ps -a
+    CONTAINER ID   IMAGE                COMMAND      CREATED        STATUS                   PORTS                                       NAMES
+    9d68b29b76a2   giggio/openvpn-arm   "ovpn_run"   33 hours ago   Up 33 hours              0.0.0.0:1194->1194/udp, :::1194->1194/udp   openvpn
+    77ab3dcdc598   hello-world          "/hello"     3 weeks ago    Exited (0) 3 weeks ago                                               optimistic_wu
+</pre>
+
+<h4>Запуск контейнеров <hr></h4>
+<p>
+Контейнер запускается командой <b>run</b>.<br>
+Основные флаги при запуске контейнера:
+</p>
+<ul>
+    <li>docker <b>-it</b>  - запустит контейнер интерактивно</li>
+    <li>docker <b>-rm</b>  - удалит контейнер после остановки</li>
+    <li>docker <b>-d</b>  - запустит контейнер в фоновом режиме</li>
+    <li>docker <b>-p 8080:80</b>  - проброс локального порта (8080) в сеть докера</li>
+    <li>docker <b>-v</b> ~/local/path<b>:</b>/path/workdir/container  - монтирование данных в контейнер</li>
+</ul>
+<p>Например:</p>
+<pre>docker run -d -p 555:80 --name NAME -v ~/PATH:/usr/share/nginx/html nginx</pre>
+<p>Докер попытается найти образ nginx локально, при его отутсвии скачает его с docker hub,<br>
+далее он запустит контейнер в фоновом режиме, на локальном порту 555, с именем NAME и
+данные для отображения возьмет из локальной директории ~/PATH.
+</p>
+
+<h4>Основные команды<hr></h4>
+<h5>Остановить контейнер</h5>
+<code>
+    docker stop id
+</code>
+
+<h5>Запустить остановленный контейнер контейнер</h5>
+<code>
+    docker start id
+</code>
+
+<h5>Удалить контейнер</h5>
+<code>
+    docker rm id
+</code>
+<h5>Удалить все остановленные контейнеры</h5>
+<code>
+    docker rm $(docker ps -a -f status=exited -q)
+</code>
+
+<h5>Просмотр образов контейнеров локально на Вашем устройстве (image)</h5>
+<code>
+    docker images
+</code>
+
+<h5>Удалить образ контейнера</h5>
+<code>
+    docker rmi id
+</code>
+<h5>Удалить все образы</h5>
+<code>
+    docker rmi $(docker images -a -q)
+</code>
+
+<h5>Для удаления неиспользуемых образов выполнить команду</h5>
+<code>
+    docker image prune --all
+</code>
+
+<h5>Выполнить вход в контейнер</h5>
+<code>
+    docker exec -it id_container /bin/bash
+</code>
+
+<h5>Сделать коммит контейнера</h5>
+<code>
+    docker commit id new_name
+</code>
+<p>создаст копию image с другим именем и тегом</p>
+<code>
+    docker tag oldname:v1 newname:v2
+</code>
+
+<h4>Использование Volumes<hr></h4>
+<h5>Создать Volume</h5>
+<code>
+    docker volume create --name volume-name
+</code>
+
+<h5>Просмотреть созданные volumes</h5>
+<code>
+    docker volume ls
+</code>
+
+<h5>Вывести подробную информацию</h5>
+<code>
+    docker volume inspect volume-name
+</code>
+
+<h4>Автозапуск контейнера<hr></h4>
+<p>При выполнении необходимо указать флаг <b>--restart</b>.</p>
+<ul>
+    <li>--restart <b>no</b>  - Значение по умолчанию</li>
+    <li>--restart <b>on-failure</b>  - Перезапустить контейнер, если он останавливается из-за ошибки</li>
+    <li>--restart <b>always</b>  - Перезапускать всегда, если контейнер остановлен. Если остановили его вручную, он перезапустится после перезагрузки службы Docker (restart docker)</li>
+    <li>--restart <b>unless-stopped</b>  - Если остановить контейнер, то он не перезапустится даже после перезапуска службы</li>
+</ul>
+
+<p>При запуске контейнера синтаксис имеет следующий вид</p>
+<code>
+    docker run --restart (значение флага) (имя контейнера)
+</code>
+
+<p>Если контейнер уже создан, то необходимо сделать <b>update</b>.</p>
+<code>
+    docker update <b>--restart always</b> id
+</code>
+
+<h4>Удалить кэш сборки <hr></h4>
+<p>Для просмотра использовании дискового пространства выполнить команду <b>docker system df</b></p>
+<pre>
+    vlad@ubuntu-hp:$ docker system df
+    TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+    Images          5         2         2.406GB   1.76GB (73%)
+    Containers      3         0         1.877MB   1.877MB (100%)
+    Local Volumes   4         0         52.59MB   52.59MB (100%)
+    Build Cache     0         0         0B        0B
+</pre>
+
+<p>Для очистки кэш необходимо выполнить</p>
+<code>
+    docker builder prune --all
+</code>
+<p>В моем случае удалилось 0B</p>
+<pre>
+    vlad@ubuntu-hp:~$ docker builder prune --all
+    WARNING! This will remove all build cache. Are you sure you want to continue? [y/N] y
+    Total reclaimed space: 0B
+</pre>
+
+
+<h4>Установка Portainer<hr></h4>
+<p>Необходимо создать volume</p>
+<code>docker volume create portainer_data</code>
+<p>Запустим портейнер следующей командой</p>
+<pre>
+    docker run -d -p 9000:9000 \
+--name portainer \
+--restart always \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v portainer_data:/data portainer/portainer
+</pre>
+
+
+{% endblock %}

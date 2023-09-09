@@ -1,0 +1,82 @@
+{% extends 'homepage/base.html' %}
+
+
+{% block content %}
+<h1>Systemd</h1>
+
+<p>
+В директории <b>/etc/systemd/system/</b> или <b>/lib/systemd/system/</b> создадим юнита <b>my-unit.service</b> с его содержимым
+</p>
+<pre>
+    [Unit]
+    Description=This-name
+    After=syslog.target
+    After=network.target
+    
+    [Service]
+    Type=simple
+    User=bednyakov
+    WorkingDirectory=/path/to/workdir/
+    ExecStart=/usr/bin/python3.8 /path/to/app.py
+    RestartSec=10
+    Restart=always
+     
+    [Install]
+    WantedBy=multi-user.target
+</pre>
+
+<p>Далее нам необходимо перезагрузить конфигурации сервисов</p>
+<pre>
+    bednyakov@ubuntu:~$ sudo systemctl daemon-reload
+</pre>
+
+<p>Запустим нашего демона</p>
+<pre>
+    bednyakov@ubuntu:~$ sudo systemctl enable my-unit.service
+    bednyakov@ubuntu:~$ sudo systemctl start my-unit.service
+</pre>
+<p>
+Проверим его состояние.<br>
+Вывод должен быть примерно следующим:
+</p>
+<pre>
+    bednyakov@ubuntu:~$ sudo systemctl status my-unit.service 
+    <font color=green>●</font> my-unit.service - This-name
+     Loaded: loaded (/lib/systemd/system/my-unit.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2022-09-25 15:09:53 MSK; 24h ago
+   Main PID: 148464 (python3.8)
+      Tasks: 3 (limit: 4496)
+     Memory: 22.1M
+     CGroup: /system.slice/my-unit.service
+             └─148464 /usr/bin/python3.8 /path/to/app.py
+
+сен 25 15:09:53 ubuntu systemd[1]: Started This-name.
+</pre>
+
+<p>Посмотреть список всех модулей, о которых знает systemd</p>
+<pre>
+    systemctl list-units
+</pre>
+<p>По умолчанию показывает только активные, чтобы посмотреть все, необходимо добавить параметр <b>--all</b>. <br>
+Можно задать фильтры по типу:</p>
+<pre>
+    systemctl list-units --all --state=inactive
+    systemctl list-units --type=service
+</pre>
+
+<p>Для просмотра содержимого сервиса:</p>
+<pre>
+    systemctl cat my-unit.service
+</pre>
+<p>Для его редактирования</p>
+<pre>
+    systemctl edit my-unit.service
+</pre>
+
+<p>Чтобы отключить запуск службы, ее можно "замаскировать"</p>
+<pre>
+    sudo systemctl mask my-unit.service
+</pre>
+<p>В этом случае службу не получится запустить; чтобы сделать доступной, нужно использовать <b>unmask</b></p>
+
+{% endblock %}
