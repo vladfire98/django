@@ -2,4 +2,41 @@
 {% block content %}
 <h1>Screen Linux</h1>
 
+<h4>Создать сессию<hr></h4>
+<pre>
+    screen -S name-session
+</pre>
+
+<h4>Свернуть сессию</h4>
+<pre>
+    1) ctrl + a
+    2) нажать "d"
+</pre>
+
+<h4>Посмотреть активные сессии</h4>
+<pre>
+    screen -ls
+</pre>
+<p>Вывод покажет id.имя-сессии</p>
+<pre>
+    vlad@ubuntu-hp:~$ screen -ls
+    There is a screen on:
+        13564.name-session	(11.09.2023 11:30:19)	(Detached)
+    1 Socket in /run/screen/S-vlad.
+</pre>
+
+<h4>Вернуться в сессию</h4>
+<pre>
+    screen -r id
+</pre>
+<p>Если активен только один скрин, то можно использовать <b>screen -r</b>. <br>
+    После флага -r можно указать id либо имя сессии.
+</p>
+
+<h4>Убить сессию</h4>
+<pre>
+    1) ctrl + a
+    2) k
+</pre>
+
 {% endblock %}
