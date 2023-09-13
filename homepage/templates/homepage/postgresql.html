@@ -47,15 +47,19 @@
 <p>Размер таблички</p>
 <pre>SELECT pg_size_pretty( pg_total_relation_size( 'stage.rgu' ) ); </pre>
 
-<p>Срез 20 табличек</p>
+<p>Срез 20 табличек по размеру</p>
 <pre>
-    SELECT nspname  '.'  relname AS "relation",
-    pg_size_pretty(pg_relation_size(C.oid)) AS "size"
-    FROM pg_class C
-    LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
-    WHERE nspname NOT IN ('pg_catalog', 'information_schema')
-    ORDER BY pg_relation_size(C.oid) DESC
-    LIMIT 20;
+    SELECT
+      schemaname AS schema_name,
+      tablename AS table_name,
+      pg_size_pretty(pg_total_relation_size(schemaname || '.' || tablename)) AS table_size
+    FROM
+      pg_tables
+    WHERE
+      schemaname NOT LIKE 'pg_%' AND
+      schemaname != 'information_schema'
+    ORDER BY
+      pg_total_relation_size(schemaname || '.' || tablename) DESC LIMIT 20;
 </pre>
 
 <p>Срез 20 бд по размеру</p>
