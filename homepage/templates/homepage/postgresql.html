@@ -58,6 +58,15 @@
     LIMIT 20;
 </pre>
 
+<p>Срез 20 бд по размеру</p>
+<pre>
+    SELECT datname, pg_size_pretty(pg_database_size(datname)) AS size
+    FROM pg_database
+    WHERE datistemplate = false
+    ORDER BY pg_database_size(datname) DESC
+    LIMIT 20;
+</pre>
+
 <p>Значение из конфига</p>
 <pre>
     SHOW max_connections;
