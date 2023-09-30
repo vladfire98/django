@@ -10,7 +10,7 @@
     psql -d db_name -f /tmp/script.sql
 </pre>
 
-<p>Импорт CSV</p>
+<h5>Импорт CSV</h5>
 <pre>
     psql -d db_name -c "COPY public.table(column1,column2) FROM '/path/to/file.csv' WITH DELIMITER ';' CSV HEADER;"
 </pre>
@@ -23,7 +23,7 @@
     delete from схема.таблица where что то = чему то;
 </pre>
 
-<p>Выдать права суперпользователя</p>
+<h5>Выдать права суперпользователя</h5>
 <pre>
     ALTER USER user_name SUPERUSER;
     ALTER USER user_name NOSUPERUSER;
@@ -34,20 +34,20 @@
     GRANT ALL ON SCHEMA STAGE TO user_name;
 </pre>
 
-<p>Выдавать права на чтение пользователю</p>
+<h5>Выдавать права на чтение пользователю</h5>
 <pre>
     GRANT SELECT ON table_name to user_name;
     GRANT SELECT ON ALL TABLES IN SCHEMA public TO user_name;
 </pre>
-<p>Права пользователей на табличку</p>
+<h5>Права пользователей на табличку</h5>
 <pre>
     select * from information_schema.table_privileges where table_name='table_name';
 </pre>
 
-<p>Размер таблички</p>
+<h5>Размер таблички</h5>
 <pre>SELECT pg_size_pretty( pg_total_relation_size( 'stage.rgu' ) ); </pre>
 
-<p>Срез 20 табличек по размеру</p>
+<h5>Срез 20 табличек по размеру</h5>
 <pre>
     SELECT
       schemaname AS schema_name,
@@ -62,7 +62,7 @@
       pg_total_relation_size(schemaname || '.' || tablename) DESC LIMIT 20;
 </pre>
 
-<p>Срез 20 бд по размеру</p>
+<h5>Срез 20 бд по размеру</h5>
 <pre>
     SELECT datname, pg_size_pretty(pg_database_size(datname)) AS size
     FROM pg_database
@@ -71,19 +71,76 @@
     LIMIT 20;
 </pre>
 
-<p>Значение из конфига</p>
+<h5>Значение из конфига</h5>
 <pre>
     SHOW max_connections;
 </pre>
 
-<p>Текущее значение</p>
+<h5>Текущее значение</h5>
 <pre>
     SELECT COUNT(*) FROM pg_stat_activity;
 </pre>
 
-<p>Сбросить все подключения от бд</p>
+<h5>Сбросить все подключения от бд</h5>
 <pre>
     SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.pid != pg_backend_pid();
+</pre>
+
+<h5>LIKE / NOT LIKE</h5>
+<pre>
+    SELECT *
+    FROM your_table
+    WHERE your_column NOT LIKE 'паттерн%';
+</pre>
+
+<h5>Для того чтобы вывести уникальные значения из колонки и показать в каких колонках они повторяются</h5>
+<pre>
+    SELECT value, string_agg(column_name, ', ') AS columns
+    FROM (
+      SELECT column_name, value
+      FROM (
+        SELECT column_name, value, COUNT(*) OVER (PARTITION BY value) AS count
+        FROM (
+          SELECT column_name, value
+          FROM your_table
+        ) AS subquery
+      ) AS subquery
+      WHERE count > 1
+    ) AS subquery
+    GROUP BY value;
+</pre>
+<p5>Столбец "value" содержит уникальные значения из колонки, а столбец "columns" содержит список названий колонок, в которых эти значения повторяются.</p5>
+
+
+<h4>ON CONFLICT DO UPDATE</h4>
+<pre>
+    CREATE TABLE stage.artemis_queue (
+        broker varchar(40) NULL,
+        queue varchar(40) NULL,
+        CONSTRAINT qual_name UNIQUE (broker, queue)
+    );
+</pre>
+<p5>запрос для такой бд</p5>
+<pre>
+    INSERT INTO stage.artemis_queue (broker, queue) VALUES ('int-01', 'TEST1' ) 
+    ON CONFLICT (broker, queue) DO NOTHING;
+</pre>
+
+<h5>Пример второй, где обновлется дата</h5>
+<pre>
+    CREATE TABLE stage.qm (
+    broker varchar(40) NULL,
+    "groups" varchar(40) NULL,
+    application varchar(40) NULL,
+    "date" date NULL,
+    CONSTRAINT qual_namef_unique UNIQUE (broker, groups, application)
+    );
+</pre>
+<pre>
+    INSERT INTO stage.qm (broker, groups, application, date) 
+    VALUES ('$BRK', '$eg', '${array[$i]}', TO_DATE('${darray[$i]}', 'MM/DD/YY') ) 
+    ON CONFLICT (broker, groups, application) 
+    DO UPDATE SET date = TO_DATE('${darray[$i]}', 'MM/DD/YY');
 </pre>
 
 
