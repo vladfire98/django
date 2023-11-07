@@ -71,6 +71,16 @@
     LIMIT 20;
 </pre>
 
+<h5>Расположение конфига</h5>
+<pre>
+    SHOW config_file;
+</pre>
+
+<h5>Расположение pg_hba</h5>
+<pre>
+    SHOW hba_file;
+</pre>
+
 <h5>Значение из конфига</h5>
 <pre>
     SHOW max_connections;
@@ -91,6 +101,11 @@
 <h5>Сбросить все подключения от бд</h5>
 <pre>
     SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.pid != pg_backend_pid();
+</pre>
+
+<h5>Проверить слот репликации</h5>
+<pre>
+    select * from pg_replication_slots;
 </pre>
 
 <h5>LIKE / NOT LIKE</h5>
