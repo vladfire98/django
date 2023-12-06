@@ -58,5 +58,8 @@ def git(request):
 def screen(request):
     return render(request, 'homepage/screen.html', {'title': 'screen'})
 
+def tar(request):
+    return render(request, 'homepage/tar.html', {'title': 'tar'})
+
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')

@@ -18,4 +18,5 @@ urlpatterns = [
     path('ufw/', ufw, name='ufw'),
     path('git/', git, name='git'),
     path('screen/', screen, name='screen'),
+    path('tar/', tar, name='tar'),
 ]
