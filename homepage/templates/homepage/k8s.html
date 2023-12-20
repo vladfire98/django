@@ -1,0 +1,135 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Kubernetes</h1>
+
+<h4>Базовые команды<hr></h4>
+<h5>Список подов</h5>
+<pre>
+    kubectl get po
+</pre>
+
+<h5>Список конфигмап</h5>
+<pre>
+    kubectl get configmaps
+</pre>
+
+<h5>Просмотр конфигмапы</h5>
+<pre>
+    kubectl get configmaps <b>name-cm</b> -o yaml
+</pre>
+
+<h5>Список деплойментов</h5>
+<pre>
+    kubectl get deploy
+</pre>
+
+<h5>Удалить деплоймент</h5>
+<pre>
+    kubectl delete deploy <b>name</b>
+</pre>
+
+<h5>Применить конфиг</h5>
+<pre>
+    kubectl apply -f <b>/path/to/file.yaml</b>
+</pre>
+
+<h5>Просмотр логов пода</h5>
+<pre>
+    kubectl logs -f <b>name-pod</b>
+</pre>
+
+<h5>Изменить кол-во реплик пода</h5>
+<pre>
+    kubectl scale deploy <b>name-deploy</b> --replicas=0
+</pre>
+
+<h5>Редактирование</h5>
+<pre>
+    kubectl edit <b>cm/po/deploy</b> name
+</pre>
+
+
+<h4>PODS <hr></h4>
+<h5>Подробная информация о поде</h5>
+<pre>
+    kubectl describe pods <b>name-po</b>
+</pre>
+
+<h5>Логин в под</h5>
+<pre>
+    kubectl exec -it <b>name-po</b> sh
+</pre>
+
+<h5>Логи</h5>
+<pre>
+    kubectl logs <b>name-po</b>
+</pre>
+
+<h5>Удалить под</h5>
+<pre>
+    kubectl delete pods <b>name-po</b>
+</pre>
+
+<h5>Перенаправление порта</h5>
+<pre>
+    kubectl port-forward <b>name-po</b> 777:80
+</pre>
+
+<h5>Запустить/Обновить под</h5>
+<pre>
+    kubectl apply -f ./manifest.yaml
+</pre>
+<p>manifest.yaml:</p>
+<pre>
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: my-web
+    spec:
+      containers:
+        - name: container-apache
+          image: httpd:latest
+          ports:
+            - containerPort: 80
+</pre>
+
+<h5>Удалить деплоймент</h5>
+<pre>
+    kubectl delete -f ./manifest.yaml
+</pre>
+<br>
+
+<h4>Deployment<hr></h4>
+
+<h5>Изменить кол-во подов</h5>
+<pre>
+    kubectl scale deploy <b>name</b> --replicas 4
+</pre>
+
+<h5>История деплоймента</h5>
+<pre>
+    kubectl rollout history deployment <b>name-deploy</b>
+</pre>
+
+<h5>Изменить образ контейнера</h5>
+<pre>
+    kubectl set image deployment <b>name</b> image=<b>new-image:latest</b> --record
+</pre>
+
+<h5>Откатит на продыдущую версию</h5>
+<pre>
+    kubectl rollout undo deployment <b>name</b>
+</pre>
+
+<h5>Откатит на 4 версию</h5>
+<pre>
+    kubectl rollout undo deployment <b>name</b> --to-revision=4
+</pre>
+
+<h5>Передеплоит текущую версию</h5>
+<pre>
+    kubectl rollout undo deployment <b>name</b>
+</pre>
+
+
+{% endblock %}

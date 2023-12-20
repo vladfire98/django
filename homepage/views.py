@@ -61,5 +61,8 @@ def screen(request):
 def tar(request):
     return render(request, 'homepage/tar.html', {'title': 'tar'})
 
+def k8s(request):
+    return render(request, 'homepage/k8s.html', {'title': 'k8s'})
+
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
