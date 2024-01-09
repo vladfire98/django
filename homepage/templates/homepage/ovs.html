@@ -1,0 +1,73 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Open vSwitch</h1>
+
+<h5>Создание бриджа</h5>
+<p>Посмотреть состояние службы</p>
+<pre>
+    systemctl start openvswitch.service
+    systemctl enable openvswitch.servic
+</pre>
+
+<p>Посмотерть настройки</p>
+<pre>
+    ovs-vsctl show
+</pre>
+
+<p>Создать бридж</p>
+<pre>
+    ovs-vsctl add-br ovsbr0
+</pre>
+
+<p>Добавить в бридж интерфейс</p>
+<pre>
+    ovs-vsctl add-port ovsbr0 eth0
+</pre>
+
+<p>Настройка сетевого интерфейса <b>eth0</b> <br>
+    (/etc/sysconfig/network-scripts/ifcfg-eth0)</p>
+<pre>
+    TYPE=Ethernet
+    BOOTPROTO=none
+    DEVICE=eth0
+    ONBOOT=yes
+    NM_CONTROLLED=no
+</pre>
+
+<p>Настройка сетевого интерфейса <b>ovsbr0</b></p>
+<pre>
+    DEVICE=ovsbr0
+    TYPE=OVSIntPort
+    DEVICETYPE=ovs
+    NM_CONTROLLED=no
+    ONBOOT=yes
+    BOOTPROTO=none
+    OVSREQUIRES="eth0"
+    IPADDR=192.168.122.35
+    NETMASK=255.255.255.0
+    GATEWAY=192.168.122.1
+    DNS1=8.8.8.8
+    DNS2=8.8.4.4
+</pre>
+
+<p>Перезапуск сетевой службы</p>
+<pre>
+    systemctl restart network
+</pre>
+
+<h5>Создание Bond</h5>
+
+<p>Для начала удалить ранее созданный порт из бриджа</p>
+<pre>
+    ovs-vsctl del-port ovsbr0 eth0
+</pre>
+
+<p>Создаем bond-интерфейс</p>
+<pre>
+    ovs-vsctl add-bond ovsbr0 bond0 eth0 eth1
+</pre>
+
+<p>Далее необходимо по аналогии настроить интерфейсы eth0,eth1 и ovsbr0 и перезапустить сетевую службу.<br></p>
+
+
+{% endblock %}

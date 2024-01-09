@@ -64,5 +64,8 @@ def tar(request):
 def k8s(request):
     return render(request, 'homepage/k8s.html', {'title': 'k8s'})
 
+def ovswitch(request):
+    return render(request, 'homepage/ovs.html', {'title': 'ovswitch'})
+
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')

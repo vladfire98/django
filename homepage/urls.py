@@ -20,4 +20,5 @@ urlpatterns = [
     path('screen/', screen, name='screen'),
     path('tar/', tar, name='tar'),
     path('k8s/', k8s, name='k8s'),
+    path('ovswitch/', ovswitch, name='ovswitch'),
 ]
