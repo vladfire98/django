@@ -27,7 +27,7 @@ def samba(request):
     return render(request, 'homepage/samba.html', {'title': 'Samba'})
 
 def disk(request):
-    return render(request, 'homepage/disk.html', {'title': 'LV'})
+    return render(request, 'homepage/disk.html', {'title': 'LVM'})
 
 def swap_linux(request):
     return render(request, 'homepage/swap_linux.html', {'title': 'Swap Linux'})
@@ -50,10 +50,10 @@ def haproxy(request):
     return render(request, 'homepage/haproxy.html', {'title': 'HAProxy'})
 
 def ufw(request):
-    return render(request, 'homepage/ufw.html', {'title': 'ufw'})
+    return render(request, 'homepage/ufw.html', {'title': 'Ufw'})
 
 def git(request):
-    return render(request, 'homepage/git.html', {'title': 'git'})
+    return render(request, 'homepage/git.html', {'title': 'Git'})
 
 def screen(request):
     return render(request, 'homepage/screen.html', {'title': 'screen'})
@@ -66,6 +66,8 @@ def k8s(request):
 
 def ovswitch(request):
     return render(request, 'homepage/ovs.html', {'title': 'ovswitch'})
+def release_handler(request):
+    return render(request, 'homepage/release_handler.html', {'title': 'Release Handler'})
 
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
