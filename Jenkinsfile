@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "vladfire.ru:latest"
 	PROJECT_NAME = "vladfire.ru"
+	DJANGO_SECRET_KEY = credentials('DJANGO_SECRET_KEY')
     }
 
     stages {
@@ -11,7 +12,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t $DOCKER_IMAGE .
+                        docker build -t ${DOCKER_IMAGE} .
                     """
                 }
             }
@@ -25,7 +26,7 @@ pipeline {
                         docker ps -a -q -f "name=${PROJECT_NAME}" | xargs -r docker rm
                     """
 
-                    sh "docker run -d --name ${PROJECT_NAME} -p 8000:8000 $DOCKER_IMAGE"
+                    sh "docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY} $DOCKER_IMAGE"
                 }
             }
         }
