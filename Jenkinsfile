@@ -34,8 +34,7 @@ pipeline {
 	
 	                // Запуск нового контейнера
 	                sh """
-		 	    export secret=${DJANGO_SECRET_KEY}
-	                    docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY=${secret} ${DOCKER_IMAGE}
+	                    docker run -d --name ${PROJECT_NAME} -p 8000:8000 ${DOCKER_IMAGE}
 	                """
 		            ///sh """
 				///docker ps -q -f "name=${PROJECT_NAME}" | xargs -r docker stop
