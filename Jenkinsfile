@@ -68,10 +68,10 @@ pipeline {
         }
     }
 }
-def sendTelegramMessage(String message, String branch, String max_downloads, String min_price, String max_price, String buildUrl) {
+def sendTelegramMessage(String message, String branch, String buildUrl) {
     sh """
         curl -s -X POST https://api.telegram.org/bot${env.TELEGRAM_TOKEN}/sendMessage \
         -d chat_id=${env.TELEGRAM_CHAT_ID} \
-        --data-urlencode text="${message}\nBranch: ${branch}\nMAX_DOWNLOADS: ${max_downloads}\nMIN_PRICE = ${min_price}, MAX_PRICE = ${max_price}\nURL: ${buildUrl}"
+        --data-urlencode text="${message}\nBranch: ${branch}\nURL: ${buildUrl}"
     """
 }
