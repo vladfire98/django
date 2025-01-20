@@ -7,6 +7,7 @@ pipeline {
 		//DJANGO_SECRET_KEY = credentials('DJANGO_SECRET_KEY')
         TELEGRAM_CHAT_ID = '7631506759'
         TELEGRAM_TOKEN = credentials('telegram-token')
+		BUILD_DATE = "${new Date().format('yyyy-MM-dd')}"
     }
 
     stages {
@@ -15,6 +16,15 @@ pipeline {
                 script {
                     env.BRANCH_NAME = env.GIT_BRANCH?.replaceFirst(/^origin\//, '') ?: 'unknown'
                     echo "Current branch: ${env.BRANCH_NAME}"
+                }
+            }
+        }
+        stage('Get commit name') {
+            steps {
+                script {
+                    def gitMessage = sh(script: 'git log -1 --pretty=%B | tail -n1', returnStdout: true).trim()
+                    env.PAGE_TITLE = "${gitMessage}-#${env.BUILD_NUMBER}-${BUILD_DATE}"
+                    echo "PAGE_TITLE=${env.PAGE_TITLE}"
                 }
             }
         }
@@ -43,7 +53,7 @@ pipeline {
 							}
 							// Запуск нового контейнера
 							sh """
-								docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY="${DJANGO_SECRET}" ${DOCKER_IMAGE}
+								docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY="${DJANGO_SECRET}" -e PAGE_TITLE=${PAGE_TITLE} ${DOCKER_IMAGE}
 							"""
 							///sh """
 								///docker ps -q -f "name=${PROJECT_NAME}" | xargs -r docker stop

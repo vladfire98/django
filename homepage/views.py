@@ -1,14 +1,18 @@
 from http.client import HTTPResponse
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
+import os
+
 
 # Create your views here.
 menu = ["Этот", "список", "вызывается", "в", "файле" ,"/homepage/views.py"]
 
+DEFAULT_TITLE = "Главная страница"
+TITLE = os.getenv("PAGE_TITLE", DEFAULT_TITLE)
 
 def index(request):
     #return HttpResponse("<h1>This is HomePage!</h1>")
-    return render(request, 'homepage/index.html', {'menu': menu, 'title': 'Главная страница'})
+    return render(request, 'homepage/index.html', {'menu': menu, 'title': TITLE})
 
 def qwerty(request):
     return HttpResponse("<h1>QWERTY!</h1>")
