@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "vladfire.ru:latest"
 	PROJECT_NAME = "vladfire.ru"
-	//DJANGO_SECRET_KEY = credentials('DJANGO_SECRET_KEY')
+	DJANGO_SECRET_KEY = credentials('DJANGO_SECRET_KEY')
     }
 
     stages {
@@ -21,7 +21,6 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 script {
-			withCredentials([string(credentialsId: 'DJANGO_SECRET_KEY', variable: 'DJANGO_SECRET')]) {
 				def containerExists = sh(script: "docker ps -a -q -f 'name=${PROJECT_NAME}'", returnStdout: true).trim()
 		
 		                // Если контейнер существует, останавливаем и удаляем его
@@ -42,7 +41,6 @@ pipeline {
 			            	///docker ps -a -q -f "name=${PROJECT_NAME}" | xargs -r docker rm
 				    	///docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY=${env.DJANGO_SECRET} ${DOCKER_IMAGE}
 					///"""
-				}
 		}
                 }
             }
