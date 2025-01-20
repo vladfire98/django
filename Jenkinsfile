@@ -10,6 +10,14 @@ pipeline {
     }
 
     stages {
+        stage('Determine Branch') {
+            steps {
+                script {
+                    env.BRANCH_NAME = env.GIT_BRANCH?.replaceFirst(/^origin\//, '') ?: 'unknown'
+                    echo "Current branch: ${env.BRANCH_NAME}"
+                }
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 script {
