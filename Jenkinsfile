@@ -22,8 +22,6 @@ pipeline {
             steps {
                 script {
                     sh """
-                        #docker ps -q -f "name=${PROJECT_NAME}" | xargs -r docker stop
-                        #docker ps -a -q -f "name=${PROJECT_NAME}" | xargs -r docker rm
 			CONTAINER_ID=$(docker ps -a -q -f "name=${PROJECT_NAME}")
                         if [ -n "${CONTAINER_ID}" ]; then
                             docker stop ${CONTAINER_ID}
