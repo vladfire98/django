@@ -22,7 +22,7 @@ pipeline {
         stage('Get commit name') {
             steps {
                 script {
-                    def gitMessage = sh(script: 'git log -1 --pretty=%B | tail -n1', returnStdout: true).trim()
+                    def gitMessage = sh(script: "git log -1 | tail -n1 | sed 's/^ *//g' | sed 's/ *$//g'", returnStdout: true).trim()
                     env.PAGE_TITLE = "${gitMessage}-#${env.BUILD_NUMBER}-${BUILD_DATE}"
                     echo "PAGE_TITLE=${env.PAGE_TITLE}"
                 }
