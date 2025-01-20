@@ -21,10 +21,11 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 script {
-		            sh "docker ps -q -f 'name=${PROJECT_NAME}' | xargs -r docker stop"
-		            sh "docker ps -a -q -f 'name=${PROJECT_NAME}' | xargs -r docker rm"
-			    export DJANGO_SECRET_KEY=${env.DJANGO_SECRET_KEY}
-			    sh "docker run -d --name ${PROJECT_NAME} -p 8000:8000  ${DOCKER_IMAGE}"
+		            sh """
+				docker ps -q -f "name=${PROJECT_NAME}" | xargs -r docker stop
+		            	docker ps -a -q -f "name=${PROJECT_NAME}" | xargs -r docker rm
+			    	docker run -d --name ${PROJECT_NAME} -p 8000:8000  ${DOCKER_IMAGE}
+				"""
 			}
                 }
             }
