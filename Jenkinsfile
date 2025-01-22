@@ -53,12 +53,12 @@ pipeline {
 							}
 							// Запуск нового контейнера
 							sh """
-								docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY="${DJANGO_SECRET}" -e PAGE_TITLE=${PAGE_TITLE} ${DOCKER_IMAGE}
+								docker run -d --name ${PROJECT_NAME} -p 8000:8000 --restart always -e DJANGO_SECRET_KEY="${DJANGO_SECRET}" -e PAGE_TITLE="${PAGE_TITLE}" ${DOCKER_IMAGE}
 							"""
 							///sh """
 								///docker ps -q -f "name=${PROJECT_NAME}" | xargs -r docker stop
 								///docker ps -a -q -f "name=${PROJECT_NAME}" | xargs -r docker rm
-								///docker run -d --name ${PROJECT_NAME} -p 8000:8000 --restart always -e DJANGO_SECRET_KEY=${env.DJANGO_SECRET} ${DOCKER_IMAGE}
+								///docker run -d --name ${PROJECT_NAME} -p 8000:8000 -e DJANGO_SECRET_KEY=${env.DJANGO_SECRET} ${DOCKER_IMAGE}
 							///"""
 					}
 				}
