@@ -93,4 +93,3 @@ def sendTelegramMessage(String message, String branch, String buildUrl) {
         --data-urlencode text="${message}\nBranch: ${branch}\nURL: ${buildUrl}"
     """
 }
-
