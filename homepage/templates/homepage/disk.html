@@ -16,13 +16,13 @@
 
 <p>Отформатировать и сделать файловую систему</p>
 <code>
-    sudo mkfs.ext4 -f /dev/sdb1
+    sudo mkfs.ext4 /dev/sdb1
 </code>
 
 <h4>Mount <hr></h4>
 <p>Будем монтировать диск в директорию /media/hdd2, допишем в <b>/etc/fstab</b> следующую строку</p>
 <pre>
-    /dev/sdb1	/media/hdd2	ext4	default		0	0
+    /dev/sdb1	/media/hdd2	ext4	defaults		0	0
 </pre>
 
 <p>Следующей командой пойдет в тот файл и сделает маунт, но перед этим нужно отмонтировать sdb</p>
