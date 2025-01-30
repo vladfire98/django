@@ -22,4 +22,5 @@ urlpatterns = [
     path('k8s/', k8s, name='k8s'),
     path('ovswitch/', ovswitch, name='ovswitch'),
     path('release_handler/', release_handler, name='release_handler'),
+    path('ip_linux/', ip_linux, name='ip_linux'),
 ]

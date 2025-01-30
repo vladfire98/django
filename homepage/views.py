@@ -70,8 +70,12 @@ def k8s(request):
 
 def ovswitch(request):
     return render(request, 'homepage/ovs.html', {'title': 'ovswitch'})
+
 def release_handler(request):
     return render(request, 'homepage/release_handler.html', {'title': 'Release Handler'})
+
+def ip_linux(request):
+    return render(request, 'homepage/ip_linux.html', {'title': 'IP Linux'})
 
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')

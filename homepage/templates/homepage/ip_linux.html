@@ -1,0 +1,101 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>IP Linux</h1>
+
+<h5>Добавление IP-адреса</b> </h5>
+<pre>
+    ip addr add <ip-адрес>/<маска> dev <интерфейс>
+    ip addr add 192.168.1.100/24 dev eth0
+</pre>
+
+<p>удаление IP-адреса</b> </p>
+<pre>
+    ip addr del 192.168.1.100/24 dev eth0
+</pre>
+
+<h5>Настройка дефолтного маршрута</h5>
+<pre>
+    ip route add default via <шлюз>
+    ip route add default via 192.168.1.1
+</pre>
+
+<p>удаление дефолтного маршрута</p>
+<pre>
+    ip route del default
+</pre>
+
+
+<h5>Настройка маршрута</b> </h5>
+<pre>
+    ip route add <сеть> via <шлюз> dev <интерфейс>
+    ip route add 10.0.0.0/24 via 192.168.1.1 dev eth0
+</pre>
+<p>Этот маршрут направляет трафик к сети 10.0.0.0/24 через шлюз 192.168.1.1 с использованием интерфейса eth0.</p>
+
+<h5>Сброс сетевого интерфейса</h5>
+<pre>
+    ip addr flush dev <интерфейс>
+    ip addr flush dev eth0
+</pre>
+<p>сбросит адрес, маршрут</p>
+
+<h5>Включение/выключение интерфейса</h5>
+<pre>
+    ip link set dev <интерфейс> down
+    ip link set dev <интерфейс> up
+</pre>
+<p>полезно, когда не сконфигурен интерфейс;</br> 
+если конфиг для интерфейса есть, можно использовать <b>ifup</b> и <b>ifdown</b> </p>
+
+
+<h4>Debian NetworkConfiguration <hr></h4>
+<p>Конфигурационный файл находится в <b>/etc/network/interfaces</b> или <b>/etc/network/interfaces.d/*.cfg</b> </br> 
+Настройки dns указываются в <b>/etc/resolv.conf</b> </p>
+<pre>
+    nameserver 12.34.56.78
+    nameserver 12.34.56.79
+</pre>
+
+
+<h5>DHCP</h5>
+<pre>
+    auto eth0
+    allow-hotplug eth0
+    iface eth0 inet dhcp
+</pre>
+
+<h5>Static</h5>
+<pre>
+    auto eth0
+    iface eth0 inet static
+        address 192.168.1.100/24
+        gateway 192.168.1.100
+</pre>
+
+
+<h4>RHEL NetworkConfiguration <hr></h4>
+<p>Конфигурационный файл находится в <b>/etc/sysconfig/network-scripts/ifcfg-*</b></b> </p>
+
+<h5>DHCP</h5>
+<pre>
+    NAME="eno1"
+    ONBOOT=yes
+    BOOTPROTO=dhcp
+    TYPE=Ethernet
+</pre>
+
+<h5>Static</h5>
+<pre>
+    DEVICE=eth0
+    TYPE=Ethernet
+    NM_CONTROLLED=no
+    ONBOOT=yes
+    BOOTPROTO=none
+    IPADDR=192.168.1.100
+    NETMASK=255.255.255.0
+    GATEWAY=192.168.1.1
+    DNS1=8.8.8.8
+    DNS2=8.8.4.4
+</pre>
+
+{% endblock %}
