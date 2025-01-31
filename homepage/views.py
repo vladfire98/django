@@ -77,5 +77,8 @@ def release_handler(request):
 def ip_linux(request):
     return render(request, 'homepage/ip_linux.html', {'title': 'IP Linux'})
 
+def network_ns(request):
+    return render(request, 'homepage/network_ns.html', {'title': 'Network namespaces'})
+
 def PackageNotFoundError(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
