@@ -23,5 +23,6 @@ urlpatterns = [
     path('ovswitch/', ovswitch, name='ovswitch'),
     path('release_handler/', release_handler, name='release_handler'),
     path('ip linux/', ip_linux, name='ip_linux'),
-    path('network-ns/', network_ns, name='network_ns'),
+    path('isolating-nic/', isolating_nic, name='isolating_nic'),
+    path('veth/', veth, name='veth'),
 ]
