@@ -1,0 +1,92 @@
+{% extends 'homepage/base.html' %}
+{% block content %}
+<h1>Veth</h1>
+
+<h4>Virtual Ethernet Device<hr> </h4>
+
+<h5>Создаем network namespace</b> </h5>
+<pre>
+    ip netns add mynamespace
+</pre>
+<p>Посмотреть список созданных сетевых неймспейсов командой</p>
+<pre>
+    root@veth:~# ip netns list
+    mynamespace (id: 0)
+</pre>
+
+<p>Можно зайти зайти внутрь этого пространства имен и посмотреть его сетевые интерфейсы</p>
+<pre>
+    root@veth:~# ip netns exec mynamespace bash
+    root@veth:~# ip a
+    1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</pre>
+
+<p>поднимем lo интерфейс</p>
+<pre>
+    root@veth:~# ip link set dev lo up
+    root@veth:~# ip a
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host 
+           valid_lft forever preferred_lft forever
+    root@veth:~#     
+</pre>
+
+<h5>veth</h5>
+<p>Создадим "шнурок" по которому процессы в пространстве имен mynamespace смогут общаться с процессами в нашем исходном пространстве имён. </p>
+<p>Сообщения, отправленные на одном конце, выходят из устройства на другом</p>
+<pre>
+    ip link add veth0 type veth peer name veth1
+</pre>
+
+<p>Прокидываем veth1 в новое пространство имён</p>
+<pre>
+    root@veth:~# ip link set veth1 netns mynamespace
+</pre>
+<p>Смотрим в новом пространстве имен сетевые интерфейсы</p>
+<pre>
+    root@veth:~# ip netns exec mynamespace ip a
+    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+        link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+        inet 127.0.0.1/8 scope host lo
+           valid_lft forever preferred_lft forever
+        inet6 ::1/128 scope host 
+           valid_lft forever preferred_lft forever
+    8: veth1@if9: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+        link/ether 1a:88:41:63:3c:1d brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    root@veth:~#
+</pre>
+<p>Осталось поднять интерфейсы и назначить им ip-адреса</p>
+<p>В текущем НС:</p>
+<pre>
+    root@veth:~# ip addr add 10.1.1.1/24 dev veth0
+    root@veth:~# ip link set dev veth0 up
+</pre>
+
+<p>В новом НС mynamespace</p>
+<pre>
+    root@veth:~# ip netns exec mynamespace bash
+    root@veth:~# ip addr add 10.1.1.2/24 dev veth1
+    root@veth:~# ip link set dev veth1 up
+</pre>
+<p>Все готово, можно запускать пинги и проверять доступность интерфейсов</p>
+<pre>
+    root@veth:~# ping 10.1.1.1
+    PING 10.1.1.1 (10.1.1.1) 56(84) bytes of data.
+    64 bytes from 10.1.1.1: icmp_seq=1 ttl=64 time=0.020 ms
+    64 bytes from 10.1.1.1: icmp_seq=2 ttl=64 time=0.038 ms
+    ...    
+    root@veth:~# ping 10.1.1.2
+    PING 10.1.1.2 (10.1.1.2) 56(84) bytes of data.
+    64 bytes from 10.1.1.2: icmp_seq=1 ttl=64 time=0.160 ms
+    64 bytes from 10.1.1.2: icmp_seq=2 ttl=64 time=0.041 ms
+    ...
+</pre>
+
+<h5>Использование</h5>
+<p>Пример использования через <b>systemd</b> можно найти в соответствующем разделе (см. NetworkNamespacePath)</p>
+
+{% endblock %}
